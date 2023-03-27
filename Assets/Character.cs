@@ -25,8 +25,6 @@ public class Character : MonoBehaviour
     public bool InJumping;
     Enemy CurentSelectedEnemy;
     Camera _camera;
-    public Vector2 JD;
-    public Vector2 CJD;
     Quaternion HandStartRot;
     Vector3 HandStartPos;
     public List<Enemy> enemiesQueue;
@@ -53,7 +51,7 @@ public class Character : MonoBehaviour
         {
             Vector3 rot = transform.rotation.eulerAngles;
 
-            cam.localRotation = Quaternion.Lerp(cam.localRotation, Quaternion.Euler(Mathf.Clamp( -(CameraSpeed * (CJD.y + joystick.Direction.y)), -angle, angle), Mathf.Clamp( (CameraSpeed * (CJD.x + joystick.Direction.x)), -angle, angle), 0), CameraDamping * Time.deltaTime);
+            cam.localRotation = Quaternion.Lerp(cam.localRotation, Quaternion.Euler(Mathf.Clamp( -(CameraSpeed * (joystick.Direction.y)), -angle, angle), Mathf.Clamp( (CameraSpeed * (joystick.Direction.x)), -angle, angle), 0), CameraDamping * Time.deltaTime);
             //float CurrentX = joystick.Direction.x * CameraSpeed;
             //float CurrentY = joystick.Direction.y*CameraSpeed/2;
             //CurrentX = Mathf.Clamp( CurrentX, -angle, angle);
@@ -86,9 +84,9 @@ public class Character : MonoBehaviour
 
             Ray ray = new Ray(cam.position, cam.forward);
             RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, 100, layer.value))
+            if (Physics.Raycast(ray, out hit, 40, layer.value))
             {
-                Enemy selectebleEnemy = hit.collider.gameObject.GetComponent<Enemy>();
+                Enemy selectebleEnemy = hit.collider.gameObject.GetComponentInParent<Enemy>();
                 if (selectebleEnemy)
                 {
                     if (CurentSelectedEnemy && CurentSelectedEnemy != selectebleEnemy)
@@ -97,8 +95,8 @@ public class Character : MonoBehaviour
                         CurentSelectedEnemy = null;
                     }
                     CurentSelectedEnemy = selectebleEnemy;
-                    hit.collider.gameObject.GetComponent<Enemy>().Selected();
-                    hit.collider.gameObject.GetComponent<Enemy>().AddMarkProgress();
+                    selectebleEnemy.Selected();
+                    selectebleEnemy.AddMarkProgress();
                 }
                 else
                 {
@@ -205,7 +203,7 @@ public class Character : MonoBehaviour
         {
             if (Input.GetMouseButton(0) && shieldReadyCof < 0.2f)
             {
-                if (shield.state == Shield.ShieldState.InHand && other.GetComponent<Bullet>().ParentEnemy.EnemyActive)
+                if (shield.state == Shield.ShieldState.InHand && other.GetComponent<Bullet>().ParentEnemy.State == EnemyAtate.Alive)
                 {
                     other.GetComponent<Bullet>().targetPos = other.GetComponent<Bullet>().ParentEnemy.transform;
                     other.GetComponent<Bullet>().reflected = true;
@@ -220,7 +218,7 @@ public class Character : MonoBehaviour
             {
                 HandAnimator.Play("ShieldShake");
                 other.GetComponent<Bullet>().blockedVector = other.transform.position + Vector3.forward * 100 + Vector3.up * Random.Range(30, 50) + Vector3.left * Random.Range(-100, 100);
-                other.GetComponent<Bullet>().reflected = true;
+                other.GetComponent<Bullet>().blocked = true;
                 other.GetComponent<Bullet>().speed *= 1.4f;
                 Destroy(other.gameObject, 2f);
             }

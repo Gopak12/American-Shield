@@ -49,7 +49,7 @@ public class ControlPoint : MonoBehaviour
         PointActive = false;
         for (int i = 0; i < enemy.Length; i++)
         {
-            if (enemy[i].EnemyActive)
+            if (enemy[i].State == EnemyAtate.Alive|| enemy[i].State == EnemyAtate.Unconscious)
             {
                 PointActive = true;
             }

@@ -316,14 +316,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   controlPoint: {fileID: 0}
-  EnemyActive: 1
+  State: 0
   CanShoot: 0
   CanMove: 0
+  HP: 2
   time: 0
   speed: 0.2
   Rotspeed: 1
   shotingSpeed: 20
-  shotingCooldowm: 5
+  shotingCooldowm: 4
   deathColorSpeed: 2
   Bullet: {fileID: 143964380466345467, guid: 03f84de9d3f8c3541b98fba5b852948e, type: 3}
   Player: {fileID: 0}
@@ -333,6 +334,7 @@ MonoBehaviour:
   MaterialHighlight: {fileID: 2100000, guid: b5ce8e0d7ce76714788613e9478422d3, type: 2}
   MaterialMarkHighlight: {fileID: 2100000, guid: 650942699343b6747aaba89474dd7ded, type: 2}
   animator: {fileID: 3361056142700662032}
+  puppet: {fileID: 0}
   Canvas: {fileID: 1020306189468250572}
   MarkBar: {fileID: 2440709266892083492}
   MarkProgress: 0
@@ -364,7 +366,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.25
+  m_Radius: 0.3
   m_Height: 2.6
   m_Direction: 1
   m_Center: {x: 0, y: 1.3, z: 0}

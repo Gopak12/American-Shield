@@ -9,16 +9,22 @@ public class Shield : MonoBehaviour
     public Transform playerTransform, handHolder;
     public Vector3 curveRotation, throwRotation;
     public float flyingSpeed;
-    public float chargeSpeed;
+    float standarFlyingSpeed;
+    public float targetedFlyingSpeed;
     public float xSpinSpeed;
     public float returnDistance;
     public bool mustReturn, firstHitting, returns, targeted;
-    public float dsd;
 
+    public LayerMask RagdollPartLayer;
     public Collider col;
     public Character player;
+    public GameObject Trail;
+    public GameObject ImpactParticle;
+    public float impactDestroyTime;
     Vector3 rot;
     Rigidbody rb;
+    List<Enemy> currentThrowAttackEnemies;
+    List<Enemy> currentThrowTargetEnemies;
     public Transform ShieldModel, cam;
 
 
@@ -27,6 +33,8 @@ public class Shield : MonoBehaviour
     {
         cam = Camera.main.transform;
         rb = GetComponent<Rigidbody>();
+        standarFlyingSpeed = flyingSpeed;
+        Trail.SetActive(false);
     }
 
     void Update()
@@ -66,15 +74,17 @@ public class Shield : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-
-        if (other.gameObject.GetComponent<Enemy>())
+        //Debug.Log("fdsdfdsfdsfdssf");
+        if ((1 << other.gameObject.layer) == RagdollPartLayer.value && !currentThrowAttackEnemies.Contains(other.gameObject.GetComponentInParent<Enemy>()))
         {
             rot = transform.rotation.eulerAngles;
-            if (player.enemiesQueue.Contains(other.gameObject.GetComponent<Enemy>()) && NearestEnemy(other.gameObject.GetComponent<Enemy>()) != transform)
+            flyingSpeed = standarFlyingSpeed;
+            if (player.enemiesQueue.Contains(other.gameObject.GetComponentInParent<Enemy>()) && NearestEnemy(other.gameObject.GetComponentInParent<Enemy>()) != transform)
             {
-                Vector3 NextEnemy = NearestEnemy(other.gameObject.GetComponent<Enemy>()).position - transform.position;
+                Vector3 NextEnemy = NearestEnemy(other.gameObject.GetComponentInParent<Enemy>()).position - transform.position;
                 transform.rotation = Quaternion.LookRotation(new Vector3(NextEnemy.x, 0, NextEnemy.z));
                 targeted = true;
+                flyingSpeed = targetedFlyingSpeed;
             }
             else if (rot.y > 2 && rot.y < 360 - 2 && !targeted)
             {
@@ -93,7 +103,13 @@ public class Shield : MonoBehaviour
                 }
 
             }
-            other.gameObject.GetComponent<Enemy>().Death();
+            other.gameObject.GetComponentInParent<Enemy>().TakeDamage();
+            other.GetComponent<Rigidbody>().AddForce(Vector3.forward * 5000);
+            //other.GetComponent<Rigidbody>().isKinematic = true;
+            currentThrowAttackEnemies.Add(other.gameObject.GetComponentInParent<Enemy>());
+            GameObject ImpactFX = Instantiate(ImpactParticle, transform.position, Quaternion.identity);
+            ImpactFX.SetActive(true);
+            Destroy(ImpactFX, impactDestroyTime);
         }
         else if (other.gameObject.GetComponent<Reflector>())
         {
@@ -103,23 +119,25 @@ public class Shield : MonoBehaviour
             if (rot.y > 0)
             {
                 transform.rotation = Quaternion.Euler(rot.x, -(TarRot.y), rot.z);
-                Debug.Log(1);
             }
             else if (rot.y < 0)
             {
                 transform.rotation = Quaternion.Euler(rot.x, (TarRot.y), rot.z);
 
-                Debug.Log(2);
             }
 
         }
-        else if (other.gameObject.GetComponent<FireButton>()&&!returns)
+        else if (other.gameObject.GetComponent<FireButton>() && !returns)
         {
             other.gameObject.GetComponent<FireButton>().Activate();
         }
+
         else if (other.gameObject.tag == "Wall" && !returns)
         {
             StartCoroutine(BackMove());
+            GameObject ImpactFX = Instantiate(ImpactParticle, transform.position, Quaternion.identity);
+            ImpactFX.SetActive(true);
+            Destroy(ImpactFX, impactDestroyTime);
         }
 
     }
@@ -128,19 +146,19 @@ public class Shield : MonoBehaviour
     {
         float dist = 100f;
         Transform nearestEnemy = this.transform;
-        if (player.enemiesQueue.Contains(enemyTransform))
+        if (currentThrowTargetEnemies.Contains(enemyTransform))
         {
-            player.enemiesQueue.Remove(enemyTransform);
+            currentThrowTargetEnemies.Remove(enemyTransform);
         }
-        if (player.enemiesQueue.Count != 0)
+        if (currentThrowTargetEnemies.Count != 0)
         {
-            for (int i = 0; i < player.enemiesQueue.Count; i++)
+            for (int i = 0; i < currentThrowTargetEnemies.Count; i++)
             {
-                float currentDist = Vector3.Distance(transform.position, player.enemiesQueue[i].transform.position);
+                float currentDist = Vector3.Distance(transform.position, currentThrowTargetEnemies[i].transform.position);
                 if (currentDist <= dist && currentDist >= 0.5f)
                 {
                     dist = currentDist;
-                    nearestEnemy = player.enemiesQueue[i].transform;
+                    nearestEnemy = currentThrowTargetEnemies[i].transform;
                 }
             }
         }
@@ -161,7 +179,11 @@ public class Shield : MonoBehaviour
         transform.localRotation = Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y, transform.eulerAngles.z + 40);
         col.enabled = true;
         rb.isKinematic = false;
+
+        Trail.SetActive(true);
         state = ShieldState.Flying;
+        currentThrowAttackEnemies = new List<Enemy>();
+        currentThrowTargetEnemies = new List<Enemy>(player.enemiesQueue);
     }
     IEnumerator BackMove()
     {
@@ -194,8 +216,9 @@ public class Shield : MonoBehaviour
         transform.SetParent(handHolder);
         transform.localPosition = Vector3.zero;
         transform.localRotation = Quaternion.Euler(0, 0, 180);
-
+        flyingSpeed = standarFlyingSpeed;
         returns = false;
+        Trail.SetActive(false);
         state = ShieldState.InHand;
     }
 

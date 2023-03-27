@@ -18,7 +18,7 @@ public class FireButton : MonoBehaviour
         Particle.SetActive(true);
         for (int i = 0; i < enemy.Length; i++)
         {
-            if (enemy[i].EnemyActive)
+            if (enemy[i].State == EnemyAtate.Alive)
             {
                 enemy[i].Death();
             }
