@@ -5,13 +5,15 @@ using UnityEngine;
 public class ControlPoint : MonoBehaviour
 {
 
-    public Enemy[] enemy;
+    public BaseEnemy[] enemy;
+    public LaserEnemy[] turrets;
     public Character player;
     public bool PointActive;
 
     void Start()
     {
-        enemy = gameObject.GetComponentsInChildren<Enemy>();
+        enemy = gameObject.GetComponentsInChildren<BaseEnemy>();
+        //turrets = gameObject.GetComponentsInChildren<LaserEnemy>();
         player = FindFirstObjectByType<Character>();
         PointActive = true;
         for (int i = 0; i < enemy.Length; i++)
@@ -19,17 +21,26 @@ public class ControlPoint : MonoBehaviour
             enemy[i].controlPoint = this;
         }
         PointDiactivation();
+
+        if (turrets.Length > 0)
+        {
+            for (int i = 0; i < turrets.Length; i++)
+            {
+                turrets[i].controlPoint = this;
+            }
+        }
     }
 
     public virtual void PointActivation()
     {
         for (int i = 0; i < enemy.Length; i++)
         {
-            enemy[i].gameObject.SetActive(true);
-            enemy[i].Player = player.gameObject;
-            enemy[i].CanShoot = true;
-            enemy[i].CanMove = true;
-            enemy[i].animator.Play("Activation");
+                enemy[i].Activate();
+        }
+
+        for (int i = 0; i < turrets.Length; i++)
+        {
+            turrets[i].Activate();
         }
     }
 
@@ -37,10 +48,13 @@ public class ControlPoint : MonoBehaviour
     {
         for (int i = 0; i < enemy.Length; i++)
         {
-            enemy[i].gameObject.SetActive(true);
-            enemy[i].CanShoot = false;
-            enemy[i].CanMove = false;
-            
+            enemy[i].Deactivate();
+        }
+
+        for (int i = 0; i < turrets.Length; i++)
+        {
+
+            turrets[i].Deactivate();
         }
     }
 
@@ -49,15 +63,22 @@ public class ControlPoint : MonoBehaviour
         PointActive = false;
         for (int i = 0; i < enemy.Length; i++)
         {
-            if (enemy[i].State == EnemyAtate.Alive|| enemy[i].State == EnemyAtate.Unconscious)
+            if (enemy[i].State == EnemyState.Alive || enemy[i].State == EnemyState.Unconscious)
             {
                 PointActive = true;
             }
         }
-        if(!PointActive)
+        for (int i = 0; i < turrets.Length; i++)
+        {
+            if (turrets[i].State == EnemyState.Alive)
+            {
+                PointActive = true;
+            }
+        }
+        if (!PointActive)
         {
             //gameObject.SetActive(false);
-            player.InPoint = false;
+            player.CheckPoint(this);
         }
     }
 

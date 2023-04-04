@@ -11,10 +11,10 @@ public class DeadZone : MonoBehaviour
     {
         if ((1 << other.gameObject.layer) == DeadZoneLayer.value)
         {
-            other.gameObject.GetComponentInParent<Enemy>().TakeDamage();
-            other.gameObject.GetComponentInParent<Enemy>().TakeDamage();
-            other.gameObject.GetComponentInParent<Enemy>().TakeDamage();
-            other.gameObject.GetComponentInParent<Enemy>().TakeDamage();
+            other.gameObject.GetComponentInParent<BaseEnemy>().TakeDamage();
+            other.gameObject.GetComponentInParent<BaseEnemy>().TakeDamage();
+            other.gameObject.GetComponentInParent<BaseEnemy>().TakeDamage();
+            other.gameObject.GetComponentInParent<BaseEnemy>().TakeDamage();
         }
     }
 }

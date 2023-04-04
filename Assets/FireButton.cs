@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FireButton : MonoBehaviour
 {
-    public Enemy[] enemy;
+    public BaseEnemy[] enemy;
     public float delay = 1;
     public GameObject Particle;
 
@@ -18,7 +18,7 @@ public class FireButton : MonoBehaviour
         Particle.SetActive(true);
         for (int i = 0; i < enemy.Length; i++)
         {
-            if (enemy[i].State == EnemyAtate.Alive)
+            if (enemy[i].State == EnemyState.Alive)
             {
                 enemy[i].Death();
             }

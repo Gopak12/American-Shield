@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    public Enemy ParentEnemy;
+    public BaseEnemy ParentEnemy;
     public Transform targetPos;
 
     [HideInInspector] public Vector3 blockedVector;
@@ -15,24 +15,33 @@ public class Bullet : MonoBehaviour
 
     void Update()
     {
-        if(reflected)
+        if (reflected)
         {
             transform.position = Vector3.MoveTowards(transform.position, new Vector3(targetPos.transform.position.x, targetPos.transform.position.y + 1.75f, targetPos.transform.position.z), speed * Time.deltaTime);
-        }else if (!blocked)
+        }
+        else if (!blocked)
         {
             transform.position = Vector3.MoveTowards(transform.position, new Vector3(targetPos.transform.position.x, targetPos.transform.position.y + 0.9f, targetPos.transform.position.z), speed * Time.deltaTime);
-            
+
         }
-        else 
+        else
         {
             transform.position = Vector3.MoveTowards(transform.position, new Vector3(blockedVector.x, blockedVector.y, blockedVector.z), speed * Time.deltaTime);
         }
-        if (ParentEnemy.State == EnemyAtate.Dead)
+        if (ParentEnemy.State == EnemyState.Dead)
         {
             Destroy(gameObject);
         }
 
     }
 
-    
+    private void OnTriggerEnter(Collider other)
+    {
+        if (reflected && other.GetComponentInParent<Enemy>())
+        {
+            other.GetComponentInParent<Enemy>().TakeDamage();
+            Destroy(this.gameObject);
+        }
+    }
+
 }

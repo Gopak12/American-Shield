@@ -11,11 +11,17 @@ public class Character : MonoBehaviour
     public Vector3 targetPos;
     public Transform cam;
     public Transform Hand;
+    public Transform LaserTarget;
+    public Transform ReflectedLaserStartPos;
+    public GameObject ReflectedLaserHitEffect;
     public Joystick joystick;
     public Animator HandAnimator;
     public GameObject SpeedParticle;
     public Shield shield;
-    public LayerMask layer;
+    public LineRenderer ReflectedLaser;
+    public bool ReflectedLaserCanHit;
+    public LayerMask EnemyMarkLayer;
+    public LayerMask ReflectedLaserLayer;
     [Range(0, 1)] public float shieldReadyCof;
     public float CameraSpeed;
     public float CameraDamping;
@@ -23,11 +29,14 @@ public class Character : MonoBehaviour
     public float angle;
     public bool InPoint;
     public bool InJumping;
+    public bool IsReflectedLaser;
+    public List<Enemy> enemiesQueue;
+    ControlPoint CurrentPoint;
     Enemy CurentSelectedEnemy;
     Camera _camera;
     Quaternion HandStartRot;
     Vector3 HandStartPos;
-    public List<Enemy> enemiesQueue;
+
 
     private void Start()
     {
@@ -35,6 +44,7 @@ public class Character : MonoBehaviour
         HandStartRot = Hand.localRotation;
         HandStartPos = Hand.localPosition;
         _camera = Camera.main;
+        ReflectedLaserHitEffect.SetActive(false);
     }
 
     void Update()
@@ -46,12 +56,12 @@ public class Character : MonoBehaviour
         }
         else { SpeedParticle.SetActive(false); }
 
-        
+
         if (joystick.Direction != Vector2.zero)
         {
             Vector3 rot = transform.rotation.eulerAngles;
 
-            cam.localRotation = Quaternion.Lerp(cam.localRotation, Quaternion.Euler(Mathf.Clamp( -(CameraSpeed * (joystick.Direction.y)), -angle, angle), Mathf.Clamp( (CameraSpeed * (joystick.Direction.x)), -angle, angle), 0), CameraDamping * Time.deltaTime);
+            cam.localRotation = Quaternion.Lerp(cam.localRotation, Quaternion.Euler(Mathf.Clamp(-(CameraSpeed * (joystick.Direction.y)), -angle, angle), Mathf.Clamp((CameraSpeed * (joystick.Direction.x)), -angle, angle), 0), CameraDamping * Time.deltaTime);
             //float CurrentX = joystick.Direction.x * CameraSpeed;
             //float CurrentY = joystick.Direction.y*CameraSpeed/2;
             //CurrentX = Mathf.Clamp( CurrentX, -angle, angle);
@@ -68,10 +78,10 @@ public class Character : MonoBehaviour
         }
         else
         {
-           // cam.localRotation = Quaternion.Lerp(cam.localRotation, Quaternion.Euler(0,0, 0), CameraDamping/50 * Time.deltaTime);
+            // cam.localRotation = Quaternion.Lerp(cam.localRotation, Quaternion.Euler(0,0, 0), CameraDamping/50 * Time.deltaTime);
         }
 
-        
+
 
 
         if (Input.GetMouseButton(0) && shield.state == Shield.ShieldState.InHand)
@@ -79,12 +89,12 @@ public class Character : MonoBehaviour
 
             shieldReadyCof = Mathf.Clamp01(shieldReadyCof + (ShieldRotSpeed * Time.deltaTime));
             _camera.fieldOfView = Mathf.Lerp(60, 48, shieldReadyCof);
-            Hand.transform.localRotation = Quaternion.Lerp(HandStartRot,Quaternion.Euler(0, 0, 0), shieldReadyCof);
+            Hand.transform.localRotation = Quaternion.Lerp(HandStartRot, Quaternion.Euler(0, 0, 0), shieldReadyCof);
             Hand.transform.localPosition = Vector3.Lerp(HandStartPos, Vector3.zero, shieldReadyCof);
 
             Ray ray = new Ray(cam.position, cam.forward);
             RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, 40, layer.value))
+            if (Physics.Raycast(ray, out hit, 40, EnemyMarkLayer.value))
             {
                 Enemy selectebleEnemy = hit.collider.gameObject.GetComponentInParent<Enemy>();
                 if (selectebleEnemy)
@@ -94,9 +104,12 @@ public class Character : MonoBehaviour
                         CurentSelectedEnemy.Deselected();
                         CurentSelectedEnemy = null;
                     }
-                    CurentSelectedEnemy = selectebleEnemy;
-                    selectebleEnemy.Selected();
-                    selectebleEnemy.AddMarkProgress();
+                    if (selectebleEnemy.State == EnemyState.Alive)
+                    {
+                        CurentSelectedEnemy = selectebleEnemy;
+                        selectebleEnemy.Selected();
+                        selectebleEnemy.AddMarkProgress();
+                    }
                 }
                 else
                 {
@@ -131,6 +144,45 @@ public class Character : MonoBehaviour
             }
         }
 
+        if (IsReflectedLaser)
+        {
+            ReflectedLaser.enabled = true;
+            ReflectedLaser.SetPosition(0, LaserTarget.transform.position);
+
+            
+            Ray ray = new Ray(cam.position, cam.forward);
+            RaycastHit hit;
+            ReflectedLaserHitEffect.SetActive(true);
+            if (Physics.Raycast(ray, out hit, 40, ReflectedLaserLayer))
+            {
+                ReflectedLaser.SetPosition(1, hit.point);
+                ReflectedLaserHitEffect.transform.position = hit.point;
+                Enemy selectebleEnemy = hit.collider.gameObject.GetComponentInParent<Enemy>();
+                if (selectebleEnemy && ReflectedLaserCanHit)
+                {
+                    selectebleEnemy.TakeDamage();
+                }
+            }
+            else
+            {
+                if (Physics.Raycast(ray, out hit, 40, ReflectedLaserLayer))
+                {
+                    ReflectedLaser.SetPosition(1, hit.point);
+                    ReflectedLaserHitEffect.transform.position = hit.point;
+                }
+                else
+                {
+                    ReflectedLaserHitEffect.SetActive(false);
+                    ReflectedLaser.SetPosition(1, cam.transform.position + cam.forward * 40);
+                    ReflectedLaserHitEffect.transform.position = cam.transform.position + cam.forward * 40;
+                }
+            }
+        }
+        else
+        {
+            ReflectedLaser.enabled = false;
+            ReflectedLaserHitEffect.SetActive(false);
+        }
 
 
 
@@ -154,7 +206,7 @@ public class Character : MonoBehaviour
     {
         if (other.GetComponent<ControlPoint>() && other.GetComponent<ControlPoint>().PointActive)
         {
-            InPoint = true;
+            SetPoint(other.GetComponent<ControlPoint>());
             other.GetComponent<ControlPoint>().PointActivation();
             other.GetComponent<ControlPoint>().player = this;
         }
@@ -171,11 +223,11 @@ public class Character : MonoBehaviour
         }
     }
 
-    IEnumerator Jump(Transform pos,float jumpHeight,float jumpSpeed)
+    IEnumerator Jump(Transform pos, float jumpHeight, float jumpSpeed)
     {
         InJumping = true;
         Vector3 StartPos = transform.position;
-        Vector3 A = new Vector3((transform.position + cam.position).x / 2 , (transform.position + cam.position).y / 2 + jumpHeight, (transform.position + cam.position).z / 2);
+        Vector3 A = new Vector3((transform.position + cam.position).x / 2, (transform.position + cam.position).y / 2 + jumpHeight, (transform.position + cam.position).z / 2);
         Vector3 B;
         Vector3 C;
         Quaternion Rotat = transform.rotation;
@@ -203,7 +255,7 @@ public class Character : MonoBehaviour
         {
             if (Input.GetMouseButton(0) && shieldReadyCof < 0.2f)
             {
-                if (shield.state == Shield.ShieldState.InHand && other.GetComponent<Bullet>().ParentEnemy.State == EnemyAtate.Alive)
+                if (shield.state == Shield.ShieldState.InHand && other.GetComponent<Bullet>().ParentEnemy.State == EnemyState.Alive)
                 {
                     other.GetComponent<Bullet>().targetPos = other.GetComponent<Bullet>().ParentEnemy.transform;
                     other.GetComponent<Bullet>().reflected = true;
@@ -222,6 +274,25 @@ public class Character : MonoBehaviour
                 other.GetComponent<Bullet>().speed *= 1.4f;
                 Destroy(other.gameObject, 2f);
             }
+        }
+    }
+
+    public void Death()
+    {
+        Debug.Log("Player die");
+    }
+
+    public void SetPoint(ControlPoint controlPoint)
+    {
+        CurrentPoint = controlPoint;
+        InPoint = true;
+    }
+
+    public void CheckPoint(ControlPoint controlPoint)
+    {
+        if (controlPoint == CurrentPoint)
+        {
+            InPoint = false;
         }
     }
 

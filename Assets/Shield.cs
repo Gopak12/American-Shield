@@ -13,6 +13,7 @@ public class Shield : MonoBehaviour
     public float targetedFlyingSpeed;
     public float xSpinSpeed;
     public float returnDistance;
+    float CurrentreturnDistance;
     public bool mustReturn, firstHitting, returns, targeted;
 
     public LayerMask RagdollPartLayer;
@@ -35,6 +36,7 @@ public class Shield : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         standarFlyingSpeed = flyingSpeed;
         Trail.SetActive(false);
+        CurrentreturnDistance = returnDistance;
     }
 
     void Update()
@@ -60,12 +62,9 @@ public class Shield : MonoBehaviour
         if (playerTransform)
         {
             float distance = Vector3.Distance(transform.position, playerTransform.position);
-            if (distance > returnDistance && !returns)
+            if (distance > CurrentreturnDistance && !returns)
             {
-                if (playerTransform)
-                {
-                    StartCoroutine(BackMove());
-                }
+                StartCoroutine(BackMove());
             }
         }
 
@@ -79,9 +78,10 @@ public class Shield : MonoBehaviour
         {
             rot = transform.rotation.eulerAngles;
             flyingSpeed = standarFlyingSpeed;
-            if (player.enemiesQueue.Contains(other.gameObject.GetComponentInParent<Enemy>()) && NearestEnemy(other.gameObject.GetComponentInParent<Enemy>()) != transform)
+            Enemy enemy = other.gameObject.GetComponentInParent<Enemy>();
+            if (player.enemiesQueue.Contains(enemy) && NearestEnemy(enemy) != transform)
             {
-                Vector3 NextEnemy = NearestEnemy(other.gameObject.GetComponentInParent<Enemy>()).position - transform.position;
+                Vector3 NextEnemy = NearestEnemy(enemy).position - transform.position;
                 transform.rotation = Quaternion.LookRotation(new Vector3(NextEnemy.x, 0, NextEnemy.z));
                 targeted = true;
                 flyingSpeed = targetedFlyingSpeed;
@@ -103,9 +103,31 @@ public class Shield : MonoBehaviour
                 }
 
             }
-            other.gameObject.GetComponentInParent<Enemy>().TakeDamage();
+            if (enemy is BaseEnemy)
+            {
+                if (!returns && enemy.ShieldCheck())
+                {
+                    StartCoroutine(BackMove());
+
+                    enemy.TakeDamage();
+                }
+                else
+                {
+
+                    enemy.TakeDamage();
+                }
+            }
+            else if (enemy is LaserEnemy)
+            {
+                enemy.TakeDamage();
+            }
+
+            if (player.enemiesQueue.Count == 0)
+            {
+                CurrentreturnDistance = returnDistance / 2;
+            }
+
             other.GetComponent<Rigidbody>().AddForce(Vector3.forward * 5000);
-            //other.GetComponent<Rigidbody>().isKinematic = true;
             currentThrowAttackEnemies.Add(other.gameObject.GetComponentInParent<Enemy>());
             GameObject ImpactFX = Instantiate(ImpactParticle, transform.position, Quaternion.identity);
             ImpactFX.SetActive(true);
@@ -131,6 +153,7 @@ public class Shield : MonoBehaviour
         {
             other.gameObject.GetComponent<FireButton>().Activate();
         }
+
 
         else if (other.gameObject.tag == "Wall" && !returns)
         {
@@ -179,7 +202,7 @@ public class Shield : MonoBehaviour
         transform.localRotation = Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y, transform.eulerAngles.z + 40);
         col.enabled = true;
         rb.isKinematic = false;
-
+        CurrentreturnDistance = returnDistance;
         Trail.SetActive(true);
         state = ShieldState.Flying;
         currentThrowAttackEnemies = new List<Enemy>();
