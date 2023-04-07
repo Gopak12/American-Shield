@@ -225,8 +225,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8518e630c6cfb6449a518c2ec1d41290, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 16
+  speed: 160
   ShieldRotSpeed: 5
+  RotSpeed: 100
+  SlowMotionTime: 0.1
+  SlowMotionForce: 0.3
   targetPos: {x: 0, y: 0.5, z: 300}
   cam: {fileID: 8635532436498896208}
   Hand: {fileID: 8635532436009317725}
@@ -49319,7 +49322,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8635532436498896213}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.5, z: -0.52}
+  m_LocalPosition: {x: 0, y: 2, z: -0.52}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

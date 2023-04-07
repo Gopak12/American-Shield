@@ -180,16 +180,21 @@ public class LaserEnemy : Enemy
     {
         State = EnemyState.Alive;
 
+        animator.enabled = true;
+
     }
 
     public override void Deactivate()
     {
         State = EnemyState.Diactivate;
+
+        StartCoroutine(AnimatorDeactivate());
     }
 
     public override void TakeDamage()
     {
 
+        animator.enabled = true;
         HP -= 1f;
 
         puppet.mode = PuppetMaster.Mode.Active;
@@ -234,6 +239,8 @@ public class LaserEnemy : Enemy
 
     public override void Death()
     {
+
+        HP = 0f;
         if (puppet)
         {
             puppet.state = PuppetMaster.State.Dead;

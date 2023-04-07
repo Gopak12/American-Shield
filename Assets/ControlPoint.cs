@@ -20,7 +20,6 @@ public class ControlPoint : MonoBehaviour
         {
             enemy[i].controlPoint = this;
         }
-        PointDiactivation();
 
         if (turrets.Length > 0)
         {
@@ -29,6 +28,7 @@ public class ControlPoint : MonoBehaviour
                 turrets[i].controlPoint = this;
             }
         }
+        PointDeactivate();
     }
 
     public virtual void PointActivation()
@@ -44,7 +44,7 @@ public class ControlPoint : MonoBehaviour
         }
     }
 
-    public virtual void PointDiactivation()
+    public virtual void PointDeactivate()
     {
         for (int i = 0; i < enemy.Length; i++)
         {

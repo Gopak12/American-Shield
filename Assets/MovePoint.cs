@@ -19,7 +19,7 @@ public class MovePoint : ControlPoint
         {
             enemy[i].controlPoint = this;
         }
-        PointDiactivation();
+        PointDeactivate();
         startPos = platform.transform.position;
     }
     private void Update()
@@ -41,7 +41,7 @@ public class MovePoint : ControlPoint
         }
     }
 
-    public override void PointDiactivation()
+    public override void PointDeactivate()
     {
         for (int i = 0; i < enemy.Length; i++)
         {

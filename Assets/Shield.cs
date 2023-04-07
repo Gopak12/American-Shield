@@ -124,10 +124,21 @@ public class Shield : MonoBehaviour
 
             if (player.enemiesQueue.Count == 0)
             {
-                CurrentreturnDistance = returnDistance / 2;
-            }
+                CurrentreturnDistance = returnDistance / 2f;
+                StartCoroutine(SlowMotion());
+                if (enemy.State == EnemyState.Dead)
+                {
 
-            other.GetComponent<Rigidbody>().AddForce(Vector3.forward * 5000);
+                    enemy.puppet.mode = RootMotion.Dynamics.PuppetMaster.Mode.Active;
+                    enemy.puppet.state = RootMotion.Dynamics.PuppetMaster.State.Dead;
+                    other.GetComponent<Rigidbody>().AddForce(-enemy.transform.forward * 400, ForceMode.Impulse);
+                }
+            }else if(enemy.State == EnemyState.Dead) {
+
+                enemy.puppet.mode = RootMotion.Dynamics.PuppetMaster.Mode.Active;
+                enemy.puppet.state = RootMotion.Dynamics.PuppetMaster.State.Dead;
+                other.GetComponent<Rigidbody>().AddForce(-enemy.transform.forward * 400,ForceMode.Impulse);
+            }
             currentThrowAttackEnemies.Add(other.gameObject.GetComponentInParent<Enemy>());
             GameObject ImpactFX = Instantiate(ImpactParticle, transform.position, Quaternion.identity);
             ImpactFX.SetActive(true);
@@ -165,6 +176,18 @@ public class Shield : MonoBehaviour
 
     }
 
+    IEnumerator SlowMotion()
+    {
+        Time.timeScale = player.SlowMotionForce;
+        Time.fixedDeltaTime = player.SlowMotionForce / 50;
+
+
+        yield return new WaitForSecondsRealtime(player.SlowMotionTime);
+
+        Time.timeScale = 1;
+        Time.fixedDeltaTime = 0.02f;
+    }
+
     public Transform NearestEnemy(Enemy enemyTransform)
     {
         float dist = 100f;
@@ -197,7 +220,7 @@ public class Shield : MonoBehaviour
     {
         firstHitting = false;
         transform.SetParent(null);
-        transform.position = cam.position + cam.forward;
+        transform.position = cam.position + cam.forward/2;
         transform.eulerAngles = cam.eulerAngles + throwRotation;
         transform.localRotation = Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y, transform.eulerAngles.z + 40);
         col.enabled = true;

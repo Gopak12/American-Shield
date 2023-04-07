@@ -819,7 +819,7 @@ Transform:
   m_LocalRotation: {x: 0.000000029802319, y: -0.00008904933, z: 0.00000013411044, w: 1}
   m_LocalPosition: {x: -0.000000030675075, y: 0.23030286, z: 0.00000014923016}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 5388513763709160566}
   m_Father: {fileID: 15708388057558203}
@@ -838,9 +838,9 @@ Rigidbody:
   m_AngularDrag: 0.05
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 2
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!136 &8217914227643725789
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -980,7 +980,7 @@ Transform:
   m_LocalRotation: {x: 0.4976317, y: -0.49762958, z: 0.50235903, w: 0.5023574}
   m_LocalPosition: {x: -0.14659648, y: 0.069452174, z: -0.0021693984}
   m_LocalScale: {x: 0.99999994, y: 0.99999994, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 3865553128694336839}
   m_Father: {fileID: 6225837385326240721}
@@ -999,9 +999,9 @@ Rigidbody:
   m_AngularDrag: 0.05
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 2
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!136 &28919562676855722
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -3156,7 +3156,7 @@ Transform:
   m_LocalRotation: {x: -0.49809584, y: -0.4980955, z: 0.50189674, w: -0.5018976}
   m_LocalPosition: {x: 0.14659694, y: 0.06944962, z: -0.0020765932}
   m_LocalScale: {x: 0.99999976, y: 0.9999999, z: 0.9999999}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 8133829220531668502}
   m_Father: {fileID: 6225837385326240721}
@@ -3175,9 +3175,9 @@ Rigidbody:
   m_AngularDrag: 0.05
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 2
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!136 &5462453381820004699
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -4097,7 +4097,7 @@ Transform:
   m_LocalRotation: {x: -0.00000029802322, y: 0.0000526011, z: 0.00000010430813, w: 1}
   m_LocalPosition: {x: 0.000000020243855, y: 0.23031516, z: 0.00000010421411}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 670491717064550013}
   m_Father: {fileID: 229644567438073990}
@@ -4116,9 +4116,9 @@ Rigidbody:
   m_AngularDrag: 0.05
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 2
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!136 &2336752610678266469
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -4258,7 +4258,7 @@ Transform:
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0.000000088080554, y: 0.26773965, z: -0.000000106476534}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 3865553128694336839}
   m_RootOrder: 0
@@ -4271,14 +4271,14 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7859684359691926130}
   serializedVersion: 2
-  m_Mass: 0.495
+  m_Mass: 1
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 2
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!136 &456302381949747841
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -4418,7 +4418,7 @@ Transform:
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0.00000007098145, y: 0.26776773, z: -0.00000004893885}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 8133829220531668502}
   m_RootOrder: 0
@@ -4431,14 +4431,14 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8565236521952468671}
   serializedVersion: 2
-  m_Mass: 0.49500003
+  m_Mass: 1
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 2
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!136 &6203842816920176009
 CapsuleCollider:
   m_ObjectHideFlags: 0

@@ -182,7 +182,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   JumpTargetPoint: {fileID: 1925367190}
-  height: 13
+  height: 17
   speed: 1
 --- !u!1 &60528992
 GameObject:
@@ -4038,7 +4038,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &1164972066
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6117,7 +6117,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &1773862896
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8751,6 +8751,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 6247515098954809924, guid: 2af3da146828d874c9515dc405088282, type: 3}
+      propertyPath: m_Interpolate
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6247515098954809924, guid: 2af3da146828d874c9515dc405088282, type: 3}
+      propertyPath: m_CollisionDetection
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6247515098954809974, guid: 2af3da146828d874c9515dc405088282, type: 3}
       propertyPath: m_RootOrder
       value: 4
@@ -8800,8 +8808,28 @@ PrefabInstance:
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 6247515098954809978, guid: 2af3da146828d874c9515dc405088282, type: 3}
+      propertyPath: RotSpeed
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 6247515098954809978, guid: 2af3da146828d874c9515dc405088282, type: 3}
       propertyPath: joystick
       value: 
       objectReference: {fileID: 2063484094}
+    - target: {fileID: 6247515098954809978, guid: 2af3da146828d874c9515dc405088282, type: 3}
+      propertyPath: CameraDamping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6247515098954809978, guid: 2af3da146828d874c9515dc405088282, type: 3}
+      propertyPath: SlowMotionTime
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6247515098954809978, guid: 2af3da146828d874c9515dc405088282, type: 3}
+      propertyPath: SlowMotionForce
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8635532435798492326, guid: 2af3da146828d874c9515dc405088282, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2af3da146828d874c9515dc405088282, type: 3}

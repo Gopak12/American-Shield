@@ -8,6 +8,9 @@ public class Character : MonoBehaviour
 
     public float speed;
     public float ShieldRotSpeed;
+    public float RotSpeed;
+    public float SlowMotionTime;
+    public float SlowMotionForce;
     public Vector3 targetPos;
     public Transform cam;
     public Transform Hand;
@@ -37,6 +40,9 @@ public class Character : MonoBehaviour
     Quaternion HandStartRot;
     Vector3 HandStartPos;
 
+    Vector3 previousPosition;
+
+    Transform targRot;
 
     private void Start()
     {
@@ -45,6 +51,33 @@ public class Character : MonoBehaviour
         HandStartPos = Hand.localPosition;
         _camera = Camera.main;
         ReflectedLaserHitEffect.SetActive(false);
+
+        Time.timeScale = 1;
+        Time.fixedDeltaTime = 0.02f;
+        targRot = new GameObject().transform;
+    }
+
+    private void LateUpdate()
+    {
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            previousPosition = Camera.main.ScreenToViewportPoint(Input.mousePosition);
+        }
+        if (Input.GetMouseButton(0))
+        {
+            Vector3 direction = previousPosition - Camera.main.ScreenToViewportPoint(Input.mousePosition);
+
+
+            targRot.Rotate(new Vector3(direction.y * RotSpeed, 0, 0));
+            targRot.Rotate(new Vector3(0, -direction.x * RotSpeed, 0), Space.World);
+            targRot.localRotation = Quaternion.Euler(ClampAngle(targRot.rotation.eulerAngles.x, -angle, angle), ClampAngle(targRot.rotation.eulerAngles.y, -angle, angle), 0f);
+
+
+
+            previousPosition = Camera.main.ScreenToViewportPoint(Input.mousePosition);
+        }
+        cam.transform.localRotation = Quaternion.Lerp(cam.transform.localRotation, targRot.localRotation, CameraDamping);
     }
 
     void Update()
@@ -55,31 +88,6 @@ public class Character : MonoBehaviour
             SpeedParticle.SetActive(true);
         }
         else { SpeedParticle.SetActive(false); }
-
-
-        if (joystick.Direction != Vector2.zero)
-        {
-            Vector3 rot = transform.rotation.eulerAngles;
-
-            cam.localRotation = Quaternion.Lerp(cam.localRotation, Quaternion.Euler(Mathf.Clamp(-(CameraSpeed * (joystick.Direction.y)), -angle, angle), Mathf.Clamp((CameraSpeed * (joystick.Direction.x)), -angle, angle), 0), CameraDamping * Time.deltaTime);
-            //float CurrentX = joystick.Direction.x * CameraSpeed;
-            //float CurrentY = joystick.Direction.y*CameraSpeed/2;
-            //CurrentX = Mathf.Clamp( CurrentX, -angle, angle);
-            //CurrentY = Mathf.Clamp(CurrentY, -angle, angle);
-
-            /*if (new Vector2(CurrentX, CurrentY).magnitude > CameraMinSensivity)
-            {
-
-                Vector3 rot = transform.rotation.eulerAngles;
-                //cam.localRotation = Quaternion.Lerp(cam.localRotation, Quaternion.Euler(ClampAngle(cam.localRotation.eulerAngles.x - CurrentY, -angle, angle), ClampAngle(cam.localRotation.eulerAngles.y + CurrentX, -angle, angle), 0), CameraDamping * Time.deltaTime);
-                cam.localRotation = Quaternion.Euler(ClampAngle(cam.localRotation.eulerAngles.x - CurrentY, -angle, angle), ClampAngle(cam.localRotation.eulerAngles.y + CurrentX, -angle, angle), 0);
-                //cam.localRotation = Quaternion.Lerp(cam.localRotation, Quaternion.Euler(Mathf.Clamp(-(CameraSpeed * joystick.Direction.y), -angle, angle), Mathf.Clamp((CameraSpeed * joystick.Direction.x), -angle, angle), 0), CameraDamping * Time.deltaTime);
-            }*/
-        }
-        else
-        {
-            // cam.localRotation = Quaternion.Lerp(cam.localRotation, Quaternion.Euler(0,0, 0), CameraDamping/50 * Time.deltaTime);
-        }
 
 
 
@@ -191,6 +199,8 @@ public class Character : MonoBehaviour
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }
+
+
 
     private float ClampAngle(float angle, float min, float max)
     {

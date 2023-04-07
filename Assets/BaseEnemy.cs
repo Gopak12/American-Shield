@@ -52,7 +52,6 @@ public class BaseEnemy : Enemy
                 animator.Play("Crouch Idle");
             }
         }
-
         puppet.mode = PuppetMaster.Mode.Kinematic;
     }
 
@@ -113,6 +112,8 @@ public class BaseEnemy : Enemy
 
     public override void TakeDamage()
     {
+
+        animator.enabled = true;
         if (HasShield)
         {
             HasShield = false;
@@ -124,10 +125,6 @@ public class BaseEnemy : Enemy
             HP -= 1f;
 
             puppet.mode = PuppetMaster.Mode.Active;
-            if (State == EnemyState.Alive)
-            {
-                StartCoroutine(LoseConsciousness());
-            }
 
             if (HP <= 0)
             {
@@ -165,6 +162,7 @@ public class BaseEnemy : Enemy
 
     public override void Activate()
     {
+        animator.enabled = true;
         if (HasShield)
         {
             EnemyShield.SetActive(true);
@@ -179,6 +177,8 @@ public class BaseEnemy : Enemy
             CanMove = false;
             StartCoroutine(OpenAnimationPlay());
         }
+
+        puppet.mode = PuppetMaster.Mode.Active;
         State = EnemyState.Alive;
     }
 
@@ -187,6 +187,7 @@ public class BaseEnemy : Enemy
         yield return new WaitForSeconds(actifationSpeed/10f);
 
         animator.speed = 2f - actifationSpeed;
+
         if (actifationSpeed < 1)
         {
             animator.Play("Kip Up");
@@ -203,12 +204,16 @@ public class BaseEnemy : Enemy
         CanShoot = false;
         CanMove = false;
 
+        StartCoroutine(AnimatorDeactivate());
         State = EnemyState.Diactivate;
     }
     public override void Death()
     {
+
+        HP = 0f;
         if (puppet)
         {
+
             puppet.state = PuppetMaster.State.Dead;
         }
         else

@@ -35,7 +35,7 @@ public class Enemy : MonoBehaviour
     {
 
     }
-    
+
     public virtual void TakeDamage()
     {
 
@@ -46,7 +46,7 @@ public class Enemy : MonoBehaviour
     }
     public virtual void Death()
     {
-        
+
     }
 
     public virtual bool ShieldCheck()
@@ -90,5 +90,11 @@ public class Enemy : MonoBehaviour
             IsMark = true;
             Canvas.SetActive(false);
         }
+    }
+
+    protected IEnumerator AnimatorDeactivate()
+    {
+        yield return new WaitForSeconds(1f);
+        if (State == EnemyState.Diactivate) animator.enabled = false;
     }
 }
