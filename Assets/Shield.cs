@@ -47,7 +47,6 @@ public class Shield : MonoBehaviour
             {
                 Throw();
             }
-            rb.velocity = Vector3.zero;
         }
         else if (state.Equals(ShieldState.Flying))
         {
@@ -165,7 +164,7 @@ public class Shield : MonoBehaviour
             other.gameObject.GetComponent<FireButton>().Activate();
         }
 
-
+       
         else if (other.gameObject.tag == "Wall" && !returns)
         {
             StartCoroutine(BackMove());
@@ -175,7 +174,6 @@ public class Shield : MonoBehaviour
         }
 
     }
-
     IEnumerator SlowMotion()
     {
         Time.timeScale = player.SlowMotionForce;
@@ -220,7 +218,7 @@ public class Shield : MonoBehaviour
     {
         firstHitting = false;
         transform.SetParent(null);
-        transform.position = cam.position + cam.forward/2;
+        transform.position = cam.position;
         transform.eulerAngles = cam.eulerAngles + throwRotation;
         transform.localRotation = Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y, transform.eulerAngles.z + 40);
         col.enabled = true;
