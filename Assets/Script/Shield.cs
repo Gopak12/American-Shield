@@ -80,8 +80,9 @@ public class Shield : MonoBehaviour
             Enemy enemy = other.gameObject.GetComponentInParent<Enemy>();
             if (player.enemiesQueue.Contains(enemy) && NearestEnemy(enemy) != transform)
             {
-                Vector3 NextEnemy = NearestEnemy(enemy).position - transform.position;
-                transform.rotation = Quaternion.LookRotation(new Vector3(NextEnemy.x, 0, NextEnemy.z));
+                Vector3 NearEnem = NearestEnemy(enemy).position;
+                Vector3 NextEnemy = new Vector3(NearEnem.x, transform.position.y, NearEnem.z) - transform.position;
+                transform.rotation = Quaternion.LookRotation(NextEnemy);
                 targeted = true;
                 flyingSpeed = targetedFlyingSpeed;
             }
@@ -222,7 +223,7 @@ public class Shield : MonoBehaviour
         transform.eulerAngles = cam.eulerAngles + throwRotation;
         transform.localRotation = Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y, transform.eulerAngles.z + 40);
         col.enabled = true;
-        rb.isKinematic = false;
+        //rb.isKinematic = false;
         CurrentreturnDistance = returnDistance;
         Trail.SetActive(true);
         state = ShieldState.Flying;

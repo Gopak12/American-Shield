@@ -71,26 +71,37 @@ public class Enemy : MonoBehaviour
             Canvas.SetActive(false);
         }
     }
-
     public virtual void AddMarkProgress()
     {
         if (IsMark) return;
-        MarkProgress += 2 * Time.deltaTime;
-        Canvas.SetActive(true);
-        Mark.transform.Rotate(new Vector3(0, 0, Rotspeed));
-        Mark.transform.localScale = Vector3.Lerp(Vector3.one * 1.5f, Vector3.one * 0.95f, MarkProgress);
 
-        if (MarkProgress >= 1)
+        if (!Player.GetComponent<Character>().enemiesQueue.Contains(this))
         {
-            if (!Player.GetComponent<Character>().enemiesQueue.Contains(this))
-            {
-                Player.GetComponent<Character>().enemiesQueue.Add(this);
-            }
-            mesh.material = MaterialMarkHighlight;
-            IsMark = true;
-            Canvas.SetActive(false);
+            Player.GetComponent<Character>().enemiesQueue.Add(this);
         }
+        mesh.material = MaterialMarkHighlight;
+        IsMark = true;
+
     }
+    /*  public virtual void AddMarkProgress()
+      {
+          if (IsMark) return;
+          MarkProgress += 2 * Time.deltaTime;
+          Canvas.SetActive(true);
+          Mark.transform.Rotate(new Vector3(0, 0, Rotspeed));
+          Mark.transform.localScale = Vector3.Lerp(Vector3.one * 1.5f, Vector3.one * 0.95f, MarkProgress);
+
+          if (MarkProgress >= 1)
+          {
+              if (!Player.GetComponent<Character>().enemiesQueue.Contains(this))
+              {
+                  Player.GetComponent<Character>().enemiesQueue.Add(this);
+              }
+              mesh.material = MaterialMarkHighlight;
+              IsMark = true;
+              Canvas.SetActive(false);
+          }
+      }*/
 
     protected IEnumerator AnimatorDeactivate()
     {
