@@ -78,7 +78,7 @@ public class Shield : MonoBehaviour
             rot = transform.rotation.eulerAngles;
             flyingSpeed = standarFlyingSpeed;
             Enemy enemy = other.gameObject.GetComponentInParent<Enemy>();
-            if (player.enemiesQueue.Contains(enemy) && NearestEnemy(enemy) != transform)
+            if (NearestEnemy(enemy) != transform)
             {
                 Vector3 NearEnem = NearestEnemy(enemy).position;
                 Vector3 NextEnemy = new Vector3(NearEnem.x, transform.position.y, NearEnem.z) - transform.position;
@@ -107,7 +107,7 @@ public class Shield : MonoBehaviour
             {
                 if (!returns && enemy.ShieldCheck())
                 {
-                    StartCoroutine(BackMove());
+                    //StartCoroutine(BackMove());
 
                     enemy.TakeDamage();
                 }
@@ -206,6 +206,10 @@ public class Shield : MonoBehaviour
                     nearestEnemy = currentThrowTargetEnemies[i].transform;
                 }
             }
+        }
+        if(Vector3.Distance(transform.position, nearestEnemy.position) > returnDistance)
+        {
+            nearestEnemy = this.transform;
         }
         return nearestEnemy;
     }

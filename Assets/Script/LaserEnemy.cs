@@ -262,6 +262,7 @@ public class LaserEnemy : Enemy
         laserState = LaserState.Cooldowm;
         Laser.enabled = false;
         player.IsReflectedLaser = false;
+        PreparationParticle.SetActive(false);
         controlPoint.CheckPoint();
 
 

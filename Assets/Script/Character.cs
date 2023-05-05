@@ -102,7 +102,7 @@ public class Character : MonoBehaviour
 
             Ray ray = new Ray(cam.position, cam.forward);
             RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, 40, EnemyMarkLayer.value))
+            if (Physics.Raycast(ray, out hit, 200, EnemyMarkLayer.value))
             {
                 Enemy selectebleEnemy = hit.collider.gameObject.GetComponentInParent<Enemy>();
                 if (selectebleEnemy)
@@ -112,7 +112,7 @@ public class Character : MonoBehaviour
                         CurentSelectedEnemy.Deselected();
                         CurentSelectedEnemy = null;
                     }
-                    if (selectebleEnemy.State == EnemyState.Alive)
+                    if (selectebleEnemy.State != EnemyState.Dead)
                     {
                         CurentSelectedEnemy = selectebleEnemy;
                         selectebleEnemy.Selected();

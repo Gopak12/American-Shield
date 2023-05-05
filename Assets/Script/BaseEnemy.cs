@@ -227,7 +227,13 @@ public class BaseEnemy : Enemy
         if (Player.GetComponent<Character>().enemiesQueue.Contains(this))
         {
             Player.GetComponent<Character>().enemiesQueue.Remove(this);
-        }
+        }/*
+        Rigidbody[] rigidbodies = GetComponentsInChildren<Rigidbody>();
+        foreach (Rigidbody rigidbod in rigidbodies)
+        {
+            
+        }*/
+        //Physics.gravity = new Vector3(0, 5f, 0);
         StartCoroutine(DeathColor());
     }
 

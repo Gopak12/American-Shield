@@ -55,7 +55,7 @@ public class Enemy : MonoBehaviour
     }
     public virtual void Selected()
     {
-        if (State == EnemyState.Alive && !IsMark)
+        if (State != EnemyState.Dead && !IsMark)
         {
             mesh.material = MaterialHighlight;
         }
