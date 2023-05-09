@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a6f656ab8114e939b71b289ffd9d7b2, type: 3}
   m_Name: Valley-FogSettings 1
   m_EditorClassIdentifier: 
-  useDistance: 1
+  useDistance: 0
   distanceGradient:
     serializedVersion: 2
     key0: {r: 0, g: 0.85213137, b: 1, a: 0.09803922}
@@ -45,8 +45,8 @@ MonoBehaviour:
   near: 37.4
   far: 150
   distanceFogIntensity: 0.694
-  useDistanceFogOnSky: 1
-  useHeight: 1
+  useDistanceFogOnSky: 0
+  useHeight: 0
   heightGradient:
     serializedVersion: 2
     key0: {r: 0, g: 0.85213137, b: 1, a: 0.09803922}
@@ -79,7 +79,7 @@ MonoBehaviour:
   low: 13.9
   high: 35
   heightFogIntensity: 0.631
-  useHeightFogOnSky: 1
+  useHeightFogOnSky: 0
   distanceHeightBlend: 0.347
   renderEvent: 450
   applyInSceneView: 0
